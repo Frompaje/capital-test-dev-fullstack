@@ -9,11 +9,11 @@ use App\Http\Dto\StoreEnterpriseDto;
 use App\Http\Dto\UpdateEnterpriseDto;
 
 use App\Models\Enterprise;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface EnterpriseServiceInterface
 {
-    public function list(ListEnterpriseDto $data): Collection;
+    public function list(ListEnterpriseDto $data): LengthAwarePaginator;
 
     public function findById(ShowEnterpriseDto $data): Enterprise;
 

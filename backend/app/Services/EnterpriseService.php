@@ -10,7 +10,7 @@ use App\Http\Dto\UpdateEnterpriseDto;
 use App\Interfaces\EnterpriseServiceInterface;
 use App\Models\Enterprise;
 use App\Traits\ValidatesEnterpriseRules;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -19,13 +19,13 @@ class EnterpriseService implements EnterpriseServiceInterface
 {
     use ValidatesEnterpriseRules;
 
-    public function list(ListEnterpriseDto $data): Collection
+    public function list(ListEnterpriseDto $data): LengthAwarePaginator
     {
         try {
             return Enterprise::orderBy('name', 'asc')
                 ->byName($data->name)
                 ->byStatus($data->status)
-                ->get();
+                ->paginate(perPage: $data->perPage, page: $data->page);
         } catch (Throwable $exception) {
             Log::error('EnterpriseService::list failed', [
                 'filters' => $data,

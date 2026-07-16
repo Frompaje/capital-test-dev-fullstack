@@ -24,17 +24,22 @@ class EnterpriseController
     public function index(Request $request): JsonResponse
     {
         try {
-            $dto = ListEnterpriseDto::fromArray($request->all());
-
-            $enterprises = $this->service->list($dto);
+            $dto        = ListEnterpriseDto::fromArray($request->all());
+            $paginator  = $this->service->list($dto);
 
             return response()->json([
                 'message' => 'Empreendimentos listados com sucesso.',
-                'data'    => $enterprises,
+                'data'    => $paginator->items(),
+                'meta'    => [
+                    'current_page' => $paginator->currentPage(),
+                    'per_page'     => $paginator->perPage(),
+                    'total'        => $paginator->total(),
+                    'last_page'    => $paginator->lastPage(),
+                ],
             ]);
         } catch (Throwable $exception) {
             Log::error('Failed to list enterprises', [
-                'filters' => $request->only(['name', 'status']),
+                'filters' => $request->only(['name', 'status', 'per_page', 'page']),
                 'error'   => $exception->getMessage(),
                 'trace'   => $exception->getTraceAsString(),
             ]);
