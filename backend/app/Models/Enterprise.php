@@ -43,4 +43,13 @@ class Enterprise extends Model
 
         return $query->where('status', $status);
     }
+
+    public function scopeById(Builder $query, string $id): Builder
+    {
+        if (empty($id)) {
+            return $query;
+        }
+
+        return $query->where('id', $id);
+    }
 }

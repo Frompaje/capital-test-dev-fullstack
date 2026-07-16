@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Interfaces\EnterpriseServiceInterface;
 use App\Http\Dto\ListEnterpriseDto;
+use App\Http\Dto\ShowEnterpriseDto;
 use App\Models\Enterprise;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,16 +39,19 @@ class EnterpriseController
         }
     }
 
-    public function show(Enterprise $enterprise): JsonResponse
+    public function show(string $id): JsonResponse
     {
         try {
+            $dto = ShowEnterpriseDto::fromArray(['id' => $id]);
+            $enterprise  = $this->service->findById($dto);
+
             return response()->json([
                 'message' => 'Empreendimento encontrado.',
-                'data'    => $enterprise,
+                'data'    => $enterprise->toArray(),
             ]);
         } catch (Throwable $exception) {
             Log::error('Failed to show enterprise', [
-                'enterprise_id' => $enterprise->id,
+                'enterprise_id' => $id,
                 'error'         => $exception->getMessage(),
                 'trace'         => $exception->getTraceAsString(),
             ]);

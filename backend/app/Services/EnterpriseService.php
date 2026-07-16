@@ -3,23 +3,24 @@
 namespace App\Services;
 
 use App\Http\Dto\ListEnterpriseDto;
+use App\Http\Dto\ShowEnterpriseDto;
 use App\Interfaces\EnterpriseServiceInterface;
 use App\Models\Enterprise;
 use Illuminate\Support\Collection;
 
 class EnterpriseService implements EnterpriseServiceInterface
 {
-    public function list(ListEnterpriseDto $filters): Collection
+    public function list(ListEnterpriseDto $data): Collection
     {
         return Enterprise::orderBy('name', 'asc')
-            ->byName($filters->name )
-            ->byStatus($filters->status)
+            ->byName($data->name )
+            ->byStatus($data->status)
             ->get();
     }
 
-    public function findById(string $id): Enterprise
+    public function findById(ShowEnterpriseDto $data): Enterprise
     {
-        return Enterprise::findOrFail($id);
+        return Enterprise::byId($data->id)->firstOrFail();
     }
 
     public function create(array $data): Enterprise
