@@ -58,6 +58,8 @@ services:
       - ./frontend:/app
     ports:
       - "${FRONTEND_PORT}:5173"
+    environment:
+      VITE_API_URL: ${API_URL}
     command: sh -c "npm install && npm run dev -- --host"
     networks:
       - capital_network
