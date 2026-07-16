@@ -17,7 +17,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 12500000.00,
                 'units_quantity' => 50,
                 'unit_value' => 250000.00,
-                'status' => 'launching',
+                'status' => 'em_lancamento',
             ],
             [
                 'name' => 'Parque das Flores',
@@ -26,7 +26,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 8400000.00,
                 'units_quantity' => 42,
                 'unit_value' => 200000.00,
-                'status' => 'under_construction',
+                'status' => 'em_obras',
             ],
             [
                 'name' => 'Alto do Ipê',
@@ -35,7 +35,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 15000000.00,
                 'units_quantity' => 60,
                 'unit_value' => 250000.00,
-                'status' => 'delivered',
+                'status' => 'entregue',
             ],
             [
                 'name' => 'Mirante do Sol',
@@ -44,7 +44,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 22000000.00,
                 'units_quantity' => 80,
                 'unit_value' => 275000.00,
-                'status' => 'under_construction',
+                'status' => 'em_obras',
             ],
             [
                 'name' => 'Jardins de Curitiba',
@@ -53,7 +53,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 9600000.00,
                 'units_quantity' => 48,
                 'unit_value' => 200000.00,
-                'status' => 'delivered',
+                'status' => 'entregue',
             ],
             [
                 'name' => 'Costa Atlântica',
@@ -62,7 +62,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 18000000.00,
                 'units_quantity' => 36,
                 'unit_value' => 500000.00,
-                'status' => 'launching',
+                'status' => 'em_lancamento',
             ],
             [
                 'name' => 'Reserva Ipiranga',
@@ -71,7 +71,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 7200000.00,
                 'units_quantity' => 30,
                 'unit_value' => 240000.00,
-                'status' => 'under_construction',
+                'status' => 'em_obras',
             ],
             [
                 'name' => 'Amazonas Tower',
@@ -80,7 +80,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 14000000.00,
                 'units_quantity' => 40,
                 'unit_value' => 350000.00,
-                'status' => 'launching',
+                'status' => 'em_lancamento',
             ],
             [
                 'name' => 'Solar do Cerrado',
@@ -89,7 +89,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 10500000.00,
                 'units_quantity' => 35,
                 'unit_value' => 300000.00,
-                'status' => 'under_construction',
+                'status' => 'em_obras',
             ],
             [
                 'name' => 'Brisa do Mar',
@@ -98,7 +98,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 16200000.00,
                 'units_quantity' => 54,
                 'unit_value' => 300000.00,
-                'status' => 'delivered',
+                'status' => 'entregue',
             ],
             [
                 'name' => 'Infinity Coast',
@@ -107,7 +107,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 45000000.00,
                 'units_quantity' => 30,
                 'unit_value' => 1500000.00,
-                'status' => 'under_construction',
+                'status' => 'em_obras',
             ],
             [
                 'name' => 'Morada do Sol',
@@ -116,7 +116,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 6400000.00,
                 'units_quantity' => 32,
                 'unit_value' => 200000.00,
-                'status' => 'delivered',
+                'status' => 'entregue',
             ],
             [
                 'name' => 'Metropolitan Flat',
@@ -125,7 +125,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 24000000.00,
                 'units_quantity' => 60,
                 'unit_value' => 400000.00,
-                'status' => 'launching',
+                'status' => 'em_lancamento',
             ],
             [
                 'name' => 'Portal do Nordeste',
@@ -134,7 +134,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 11200000.00,
                 'units_quantity' => 28,
                 'unit_value' => 400000.00,
-                'status' => 'under_construction',
+                'status' => 'em_obras',
             ],
             [
                 'name' => 'Pampa Green',
@@ -143,7 +143,7 @@ class EnterpriseSeeder extends Seeder
                 'total_value' => 9000000.00,
                 'units_quantity' => 45,
                 'unit_value' => 200000.00,
-                'status' => 'delivered',
+                'status' => 'entregue',
             ],
         ];
 
