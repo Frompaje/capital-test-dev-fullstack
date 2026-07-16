@@ -7,6 +7,7 @@ use App\Http\Dto\EnterpriseResponseDto;
 use App\Http\Dto\ListEnterpriseDto;
 use App\Http\Dto\ShowEnterpriseDto;
 use App\Http\Dto\StoreEnterpriseDto;
+use App\Http\Dto\UpdateEnterpriseDto;
 use App\Models\Enterprise;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -90,28 +91,25 @@ class EnterpriseController
         }
     }
 
-    public function update(Request $request, Enterprise $enterprise): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         try {
-            $validated = $request->validate([
-                'name'            => 'sometimes|string|max:255',
-                'city'            => 'sometimes|string|max:255',
-                'state'           => 'sometimes|string|size:2',
-                'total_value'     => 'sometimes|numeric|min:0.01',
-                'units_quantity'  => 'sometimes|integer|min:1',
-                'unit_value'      => 'sometimes|numeric|min:0.01',
-                'status'          => 'sometimes|in:em_lancamento,em_obras,entregue',
-            ]);
-
-            $updated = $this->service->update($enterprise, $validated);
+            $dto         = UpdateEnterpriseDto::fromArray($id, $request->all());
+            $updated     = $this->service->update($dto);
+            $responseDto = EnterpriseResponseDto::fromModel($updated);
 
             return response()->json([
                 'message' => 'Empreendimento atualizado com sucesso.',
-                'data'    => $updated,
+                'data'    => $responseDto->toArray(),
             ]);
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'message' => 'Dados inválidos.',
+                'errors'  => $exception->errors(),
+            ], 422);
         } catch (Throwable $exception) {
             Log::error('Failed to update enterprise', [
-                'enterprise_id' => $enterprise->id,
+                'enterprise_id' => $id,
                 'payload'       => $request->all(),
                 'error'         => $exception->getMessage(),
                 'trace'         => $exception->getTraceAsString(),

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Dto\ListEnterpriseDto;
 use App\Http\Dto\ShowEnterpriseDto;
 use App\Http\Dto\StoreEnterpriseDto;
+use App\Http\Dto\UpdateEnterpriseDto;
 use App\Interfaces\EnterpriseServiceInterface;
 use App\Models\Enterprise;
 use App\Traits\ValidatesEnterpriseRules;
@@ -53,7 +54,7 @@ class EnterpriseService implements EnterpriseServiceInterface
     public function create(StoreEnterpriseDto $data): Enterprise
     {
         try {
-            $this->validateStoreRules($data);
+            $this->validateNumericRules($data->toArray());
 
             return Enterprise::create($data->toArray());
         } catch (ValidationException $exception) {
@@ -73,16 +74,26 @@ class EnterpriseService implements EnterpriseServiceInterface
         }
     }
 
-    public function update(Enterprise $enterprise, array $data): Enterprise
+    public function update(UpdateEnterpriseDto $data): Enterprise
     {
         try {
-            $enterprise->update(array_filter($data, fn($value) => $value !== null));
+            $this->validateNumericRules($data->toArray());
+
+            $enterprise = Enterprise::byId($data->id)->firstOrFail();
+
+            $enterprise->update($data->toArray());
 
             return $enterprise->fresh();
+        } catch (ValidationException $exception) {
+            Log::warning('EnterpriseService::update validation failed', [
+                'errors' => $exception->errors(),
+            ]);
+
+            throw $exception;
         } catch (Throwable $exception) {
             Log::error('EnterpriseService::update failed', [
-                'enterprise_id' => $enterprise->id,
-                'payload'       => $data,
+                'enterprise_id' => $data->id,
+                'payload'       => $data->toArray(),
                 'error'         => $exception->getMessage(),
                 'trace'         => $exception->getTraceAsString(),
             ]);
