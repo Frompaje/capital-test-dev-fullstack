@@ -2,33 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\EnterpriseServiceInterface;
 use App\Http\Dto\ListEnterpriseDto;
-use App\Http\Requests\Enterprise\Dto\EnterpriseResponseData;
-use App\Http\Requests\Enterprise\Dto\StoreEnterpriseData;
-use App\Http\Requests\Enterprise\Dto\UpdateEnterpriseData;
 use App\Models\Enterprise;
-use App\Services\EnterpriseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class EnterpriseController
 {
     public function __construct(
-        private readonly EnterpriseService $service,
+        private readonly EnterpriseServiceInterface $service,
     ) {}
 
     public function index(Request $request): JsonResponse
     {
         try {
             $dto = ListEnterpriseDto::fromArray($request->all());
-            Log::info('Listando empreendimentos');
 
-            $enterprises = $this->service->list($dto->toArray());
+            $enterprises = $this->service->list($dto);
 
-            return response()->json(['message' => 'Empreendimentos listados com sucesso.', 'data' => $enterprises]);
+            return response()->json([
+                'message' => 'Empreendimentos listados com sucesso.',
+                'data'    => $enterprises,
+            ]);
         } catch (Throwable $exception) {
             Log::error('Failed to list enterprises', [
                 'filters' => $request->only(['name', 'status']),
@@ -39,13 +37,15 @@ class EnterpriseController
             return response()->json(['message' => 'Erro ao listar empreendimentos.'], 500);
         }
     }
-    /*
+
     public function show(Enterprise $enterprise): JsonResponse
     {
         try {
-            return response()->json(
-            );
-        } catch (\Throwable $exception) {
+            return response()->json([
+                'message' => 'Empreendimento encontrado.',
+                'data'    => $enterprise,
+            ]);
+        } catch (Throwable $exception) {
             Log::error('Failed to show enterprise', [
                 'enterprise_id' => $enterprise->id,
                 'error'         => $exception->getMessage(),
@@ -59,19 +59,23 @@ class EnterpriseController
     public function store(Request $request): JsonResponse
     {
         try {
-            $data = StoreEnterpriseData::fromArray($request->all());
-            $enterprise = $this->service->create($data);
+            $validated = $request->validate([
+                'name'            => 'required|string|max:255',
+                'city'            => 'required|string|max:255',
+                'state'           => 'required|string|size:2',
+                'total_value'     => 'required|numeric|min:0.01',
+                'units_quantity'  => 'required|integer|min:1',
+                'unit_value'      => 'required|numeric|min:0.01',
+                'status'          => 'required|in:em_lancamento,em_obras,entregue',
+            ]);
 
-            return response()->json(
-                EnterpriseResponseData::fromModel($enterprise),
-                201
-            );
-        } catch (ValidationException $exception) {
+            $enterprise = $this->service->create($validated);
+
             return response()->json([
-                'message' => 'Dados inválidos.',
-                'errors'  => $exception->errors(),
-            ], 422);
-        } catch (\Throwable $exception) {
+                'message' => 'Empreendimento cadastrado com sucesso.',
+                'data'    => $enterprise,
+            ], 201);
+        } catch (Throwable $exception) {
             Log::error('Failed to create enterprise', [
                 'payload' => $request->all(),
                 'error'   => $exception->getMessage(),
@@ -85,18 +89,23 @@ class EnterpriseController
     public function update(Request $request, Enterprise $enterprise): JsonResponse
     {
         try {
-            $data = UpdateEnterpriseData::fromArray($request->all());
-            $updated = $this->service->update($enterprise, $data);
+            $validated = $request->validate([
+                'name'            => 'sometimes|string|max:255',
+                'city'            => 'sometimes|string|max:255',
+                'state'           => 'sometimes|string|size:2',
+                'total_value'     => 'sometimes|numeric|min:0.01',
+                'units_quantity'  => 'sometimes|integer|min:1',
+                'unit_value'      => 'sometimes|numeric|min:0.01',
+                'status'          => 'sometimes|in:em_lancamento,em_obras,entregue',
+            ]);
 
-            return response()->json(
-                EnterpriseResponseData::fromModel($updated)
-            );
-        } catch (ValidationException $exception) {
+            $updated = $this->service->update($enterprise, $validated);
+
             return response()->json([
-                'message' => 'Dados inválidos.',
-                'errors'  => $exception->errors(),
-            ], 422);
-        } catch (\Throwable $exception) {
+                'message' => 'Empreendimento atualizado com sucesso.',
+                'data'    => $updated,
+            ]);
+        } catch (Throwable $exception) {
             Log::error('Failed to update enterprise', [
                 'enterprise_id' => $enterprise->id,
                 'payload'       => $request->all(),
@@ -114,7 +123,7 @@ class EnterpriseController
             $this->service->delete($enterprise);
 
             return response()->json(null, 204);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             Log::error('Failed to delete enterprise', [
                 'enterprise_id' => $enterprise->id,
                 'error'         => $exception->getMessage(),
@@ -124,5 +133,4 @@ class EnterpriseController
             return response()->json(['message' => 'Erro ao excluir empreendimento.'], 500);
         }
     }
-*/
 }

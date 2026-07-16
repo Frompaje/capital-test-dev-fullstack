@@ -2,18 +2,18 @@
 
 namespace App\Services;
 
-use App\Http\Requests\Enterprise\Dto\StoreEnterpriseData;
-use App\Http\Requests\Enterprise\Dto\UpdateEnterpriseData;
+use App\Http\Dto\ListEnterpriseDto;
+use App\Interfaces\EnterpriseServiceInterface;
 use App\Models\Enterprise;
 use Illuminate\Support\Collection;
 
-class EnterpriseService
+class EnterpriseService implements EnterpriseServiceInterface
 {
-    public function list(array $request): Collection
+    public function list(ListEnterpriseDto $filters): Collection
     {
-        return Enterprise::orderBy('name', 'desc')
-            ->byName($request['name'])
-            ->byStatus($request['status'])
+        return Enterprise::orderBy('name', 'asc')
+            ->byName($filters->name )
+            ->byStatus($filters->status)
             ->get();
     }
 
@@ -22,30 +22,14 @@ class EnterpriseService
         return Enterprise::findOrFail($id);
     }
 
-    public function create(StoreEnterpriseData $data): Enterprise
+    public function create(array $data): Enterprise
     {
-        return Enterprise::create([
-            'name'           => $data->name,
-            'city'           => $data->city,
-            'state'          => $data->state,
-            'total_value'    => $data->totalValue,
-            'units_quantity' => $data->unitsQuantity,
-            'unit_value'     => $data->unitValue,
-            'status'         => $data->status,
-        ]);
+        return Enterprise::create($data);
     }
 
-    public function update(Enterprise $enterprise, UpdateEnterpriseData $data): Enterprise
+    public function update(Enterprise $enterprise, array $data): Enterprise
     {
-        $enterprise->update(array_filter([
-            'name'           => $data->name,
-            'city'           => $data->city,
-            'state'          => $data->state,
-            'total_value'    => $data->totalValue,
-            'units_quantity' => $data->unitsQuantity,
-            'unit_value'     => $data->unitValue,
-            'status'         => $data->status,
-        ], fn($value) => $value !== null));
+        $enterprise->update(array_filter($data, fn($value) => $value !== null));
 
         return $enterprise->fresh();
     }

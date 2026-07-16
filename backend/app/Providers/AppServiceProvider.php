@@ -2,23 +2,16 @@
 
 namespace App\Providers;
 
+use App\Interfaces\EnterpriseServiceInterface;
+use App\Services\EnterpriseService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
+        $this->app->bind(EnterpriseServiceInterface::class, EnterpriseService::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        //
-    }
+    public function boot(): void {}
 }
