@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\EnterpriseServiceInterface;
+use App\Http\Dto\EnterpriseResponseDto;
 use App\Http\Dto\ListEnterpriseDto;
 use App\Http\Dto\ShowEnterpriseDto;
+use App\Http\Dto\StoreEnterpriseDto;
 use App\Models\Enterprise;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class EnterpriseController
@@ -63,22 +66,19 @@ class EnterpriseController
     public function store(Request $request): JsonResponse
     {
         try {
-            $validated = $request->validate([
-                'name'            => 'required|string|max:255',
-                'city'            => 'required|string|max:255',
-                'state'           => 'required|string|size:2',
-                'total_value'     => 'required|numeric|min:0.01',
-                'units_quantity'  => 'required|integer|min:1',
-                'unit_value'      => 'required|numeric|min:0.01',
-                'status'          => 'required|in:em_lancamento,em_obras,entregue',
-            ]);
-
-            $enterprise = $this->service->create($validated);
+            $dto         = StoreEnterpriseDto::fromArray($request->all());
+            $enterprise  = $this->service->create($dto);
+            $responseDto = EnterpriseResponseDto::fromModel($enterprise);
 
             return response()->json([
                 'message' => 'Empreendimento cadastrado com sucesso.',
-                'data'    => $enterprise,
+                'data'    => $responseDto->toArray(),
             ], 201);
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'message' => 'Dados inválidos.',
+                'errors'  => $exception->errors(),
+            ], 422);
         } catch (Throwable $exception) {
             Log::error('Failed to create enterprise', [
                 'payload' => $request->all(),
