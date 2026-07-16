@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Dto\DeleteEnterpriseDto;
 use App\Http\Dto\ListEnterpriseDto;
 use App\Http\Dto\ShowEnterpriseDto;
 use App\Http\Dto\StoreEnterpriseDto;
@@ -102,13 +103,17 @@ class EnterpriseService implements EnterpriseServiceInterface
         }
     }
 
-    public function delete(Enterprise $enterprise): void
+    public function delete(DeleteEnterpriseDto $data): Enterprise
     {
         try {
+            $enterprise = Enterprise::byId($data->id)->firstOrFail();
+
             $enterprise->delete();
+
+            return $enterprise;
         } catch (Throwable $exception) {
             Log::error('EnterpriseService::delete failed', [
-                'enterprise_id' => $enterprise->id,
+                'enterprise_id' => $data->id,
                 'error'         => $exception->getMessage(),
                 'trace'         => $exception->getTraceAsString(),
             ]);

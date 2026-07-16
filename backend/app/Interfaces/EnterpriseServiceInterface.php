@@ -2,6 +2,7 @@
 
 namespace App\Interfaces;
 
+use App\Http\Dto\DeleteEnterpriseDto;
 use App\Http\Dto\ListEnterpriseDto;
 use App\Http\Dto\ShowEnterpriseDto;
 use App\Http\Dto\StoreEnterpriseDto;
@@ -20,5 +21,5 @@ interface EnterpriseServiceInterface
 
     public function update(UpdateEnterpriseDto $data): Enterprise;
 
-    public function delete(Enterprise $enterprise): void;
+    public function delete(DeleteEnterpriseDto $data): Enterprise;
 }

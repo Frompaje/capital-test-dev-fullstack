@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Interfaces\EnterpriseServiceInterface;
 use App\Http\Dto\EnterpriseResponseDto;
+use App\Http\Dto\DeleteEnterpriseDto;
 use App\Http\Dto\ListEnterpriseDto;
 use App\Http\Dto\ShowEnterpriseDto;
 use App\Http\Dto\StoreEnterpriseDto;
 use App\Http\Dto\UpdateEnterpriseDto;
-use App\Models\Enterprise;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -119,15 +119,20 @@ class EnterpriseController
         }
     }
 
-    public function destroy(Enterprise $enterprise): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         try {
-            $this->service->delete($enterprise);
+            $dto = DeleteEnterpriseDto::fromArray(['id' => $id]);
+            $enterprise = $this->service->delete($dto);
+            $responseDto = EnterpriseResponseDto::fromModel($enterprise);
 
-            return response()->json(null, 204);
+            return response()->json([
+                'message' => 'Empreendimento excluído com sucesso.',
+                'data'    => $responseDto->toArray(),
+            ]);
         } catch (Throwable $exception) {
             Log::error('Failed to delete enterprise', [
-                'enterprise_id' => $enterprise->id,
+                'enterprise_id' => $id,
                 'error'         => $exception->getMessage(),
                 'trace'         => $exception->getTraceAsString(),
             ]);
