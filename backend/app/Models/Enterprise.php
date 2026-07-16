@@ -26,13 +26,21 @@ class Enterprise extends Model
         'units_quantity' => 'integer',
     ];
 
-    public function scopeByName(Builder $query, string $name): Builder
+    public function scopeByName(Builder $query, ?string $name): Builder
     {
+        if (empty($name)) {
+            return $query;
+        }
+
         return $query->where('name', 'ilike', "%{$name}%");
     }
 
-    public function scopeByStatus(Builder $query, string $status): Builder
+    public function scopeByStatus(Builder $query, ?string $status): Builder
     {
+        if (empty($status)) {
+            return $query;
+        }
+
         return $query->where('status', $status);
     }
 }
