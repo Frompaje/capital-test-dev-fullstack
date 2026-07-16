@@ -10,16 +10,19 @@ trait ValidatesEnterpriseRules
     private function validateNumericRules(array $values): void
     {
         $validator = Validator::make($values, [
-            'totalValue'    => ['numeric', 'gt:0'],
-            'unitsQuantity' => ['numeric', 'gt:0'],
-            'unitValue'     => ['numeric', 'gt:0'],
+            'total_value'    => ['required', 'numeric', 'min:1'],
+            'units_quantity' => ['required', 'numeric', 'min:1'],
+            'unit_value'     => ['required', 'numeric', 'min:1'],
         ], [
-            'totalValue.numeric'    => 'O valor total deve ser um número.',
-            'totalValue.gt'         => 'O valor total deve ser maior que zero.',
-            'unitsQuantity.numeric' => 'A quantidade de unidades deve ser um número.',
-            'unitsQuantity.gt'      => 'A quantidade de unidades deve ser maior que zero.',
-            'unitValue.numeric'     => 'O valor da unidade deve ser um número.',
-            'unitValue.gt'          => 'O valor da unidade deve ser maior que zero.',
+            'total_value.required'    => 'O valor total é obrigatório.',
+            'total_value.numeric'     => 'O valor total deve ser um número.',
+            'total_value.min'         => 'O valor total deve ser maior que zero.',
+            'units_quantity.required' => 'A quantidade de unidades é obrigatória.',
+            'units_quantity.numeric'  => 'A quantidade de unidades deve ser um número.',
+            'units_quantity.min'      => 'A quantidade de unidades deve ser maior que zero.',
+            'unit_value.required'     => 'O valor da unidade é obrigatório.',
+            'unit_value.numeric'      => 'O valor da unidade deve ser um número.',
+            'unit_value.min'          => 'O valor da unidade deve ser maior que zero.',
         ]);
 
         if ($validator->fails()) {
