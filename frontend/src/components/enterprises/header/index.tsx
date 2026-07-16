@@ -1,23 +1,23 @@
-import { Separator } from "@/components/ui/separator"
+import { Link } from "react-router-dom";
 
 export function Header() {
   return (
-    <header className="flex w-full flex-col">
-
-      <div className="flex items-center gap-3 px-4 py-2">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-sm font-semibold text-white">
-          E
-        </div>
-
-        <div className="flex flex-col">
-          <h1 className="text-lg font-semibold leading-tight text-slate-900">
-            Empreendimentos
-          </h1>
-          <p className="text-sm text-slate-500">Gestão interna</p>
-        </div>
+    <header className="border-b bg-background">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="grid h-8 w-8 place-items-center rounded-md bg-primary text-primary-foreground">
+            <span className="text-sm font-bold">E</span>
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold leading-tight">
+              Empreendimentos
+            </p>
+            <p className="hidden text-xs text-muted-foreground sm:block">
+              Gestão interna
+            </p>
+          </div>
+        </Link>
       </div>
-
-      <Separator className="w-full" />
     </header>
-  )
+  );
 }
