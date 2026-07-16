@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Enterprise extends Model
 {
@@ -24,4 +25,14 @@ class Enterprise extends Model
         'unit_value' => 'decimal:2',
         'units_quantity' => 'integer',
     ];
+
+    public function scopeByName(Builder $query, string $name): Builder
+    {
+        return $query->where('name', 'ilike', "%{$name}%");
+    }
+
+    public function scopeByStatus(Builder $query, string $status): Builder
+    {
+        return $query->where('status', $status);
+    }
 }
