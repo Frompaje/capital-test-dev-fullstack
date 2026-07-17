@@ -257,6 +257,17 @@ docker compose exec app php artisan migrate:fresh --seed
 docker compose exec frontend npm install
 ```
 
+### Setup manual (opcional)
+
+O `docker compose up` já faz isso no entrypoint. Use só se quiser rodar à mão:
+
+```bash
+docker compose exec app composer install
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan db:seed --force
+docker compose exec frontend npm install
+```
+
 ## Stack
 
 - PHP 8.3 / Laravel
