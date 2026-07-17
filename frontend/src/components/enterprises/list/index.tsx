@@ -31,7 +31,7 @@ export function List() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6">
-      <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="rounded-xl border bg-card">
         <div className="border-b p-4">
           <Filter
             search={searchInput}
@@ -41,11 +41,13 @@ export function List() {
           />
         </div>
 
-        <TableComponent
-          enterprises={list.enterprises}
-          isLoading={isLoading}
-          isError={isError}
-        />
+        <div className="overflow-x-auto">
+          <TableComponent
+            enterprises={list.enterprises}
+            isLoading={isLoading}
+            isError={isError}
+          />
+        </div>
 
         <div className="flex h-14 items-center justify-center border-t px-4">
           {list.lastPage > 1 && (

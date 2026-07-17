@@ -9,8 +9,6 @@ Monorepo com API Laravel (PHP) + frontend React (TypeScript) + PostgreSQL, execu
 - Docker
 - Docker Compose
 
-Não é necessário instalar PHP, Composer, Node.js ou PostgreSQL na máquina local.
-
 ## Subir a aplicação
 
 Na raiz do projeto:
@@ -92,15 +90,79 @@ cp .env.example .env
 | `PUT` | `/api/enterprises/{id}` | Atualização |
 | `DELETE` | `/api/enterprises/{id}` | Exclusão |
 
-Exemplos de filtros:
+Status possíveis: `em_lancamento`, `em_obras`, `entregue`.
+
+### Postman
+
+Importe a collection pronta em [`postman/Enterprises.postman_collection.json`](postman/Enterprises.postman_collection.json) (Import → Upload Files no Postman).
+
+Variáveis da collection:
+
+| Variável | Valor padrão | Uso |
+|----------|--------------|-----|
+| `baseUrl` | `http://localhost:8000/api` | Prefixo da API |
+| `enterpriseId` | _(vazio)_ | UUID para Show / Update / Delete — preencha com um `id` retornado no List |
+
+### URLs e bodies (Postman)
+
+Base: `http://localhost:8000/api`
+
+#### Listar — `GET`
 
 ```text
-GET /api/enterprises?name=Residencial
-GET /api/enterprises?status=em_obras
-GET /api/enterprises?name=Parque&status=em_lancamento&page=1&per_page=10
+http://localhost:8000/api/enterprises
+http://localhost:8000/api/enterprises?name=Residencial
+http://localhost:8000/api/enterprises?status=em_obras
+http://localhost:8000/api/enterprises?name=Parque&status=em_lancamento&page=1&per_page=10
 ```
 
-Status possíveis: `em_lancamento`, `em_obras`, `entregue`.
+#### Detalhe — `GET`
+
+```text
+http://localhost:8000/api/enterprises/{id}
+```
+
+#### Cadastrar — `POST`
+
+```text
+http://localhost:8000/api/enterprises
+```
+
+```json
+{
+  "name": "Residencial Aurora",
+  "city": "São Paulo",
+  "state": "SP",
+  "total_value": 15000000,
+  "units_quantity": 60,
+  "unit_value": 250000,
+  "status": "em_lancamento"
+}
+```
+
+#### Atualizar — `PUT`
+
+```text
+http://localhost:8000/api/enterprises/{id}
+```
+
+```json
+{
+  "name": "Residencial Aurora Atualizado",
+  "city": "Campinas",
+  "state": "SP",
+  "total_value": 18000000,
+  "units_quantity": 72,
+  "unit_value": 250000,
+  "status": "em_obras"
+}
+```
+
+#### Excluir — `DELETE`
+
+```text
+http://localhost:8000/api/enterprises/{id}
+```
 
 ## Como testar a aplicação
 

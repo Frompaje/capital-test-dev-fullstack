@@ -19,8 +19,8 @@ export function Filter({
   onStatusChange,
 }: props) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4">
-      <div className="relative w-full max-w-xs">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative w-full sm:max-w-xs">
         <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Buscar por nome..."
@@ -33,13 +33,16 @@ export function Filter({
       <Tabs
         value={status}
         onValueChange={(value) => onStatusChange(value as FilterStatus)}
+        className="w-full min-w-0 sm:w-auto"
       >
-        <TabsList>
-          <TabsTrigger value="all">Todos</TabsTrigger>
-          <TabsTrigger value="em_lancamento">Em lançamento</TabsTrigger>
-          <TabsTrigger value="em_obras">Em obras</TabsTrigger>
-          <TabsTrigger value="entregue">Entregue</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList>
+            <TabsTrigger value="all">Todos</TabsTrigger>
+            <TabsTrigger value="em_lancamento">Em lançamento</TabsTrigger>
+            <TabsTrigger value="em_obras">Em obras</TabsTrigger>
+            <TabsTrigger value="entregue">Entregue</TabsTrigger>
+          </TabsList>
+        </div>
       </Tabs>
     </div>
   );

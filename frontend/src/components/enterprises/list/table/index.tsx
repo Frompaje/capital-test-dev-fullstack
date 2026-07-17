@@ -36,15 +36,15 @@ export function TableComponent({
 
   return (
     <div className="min-h-[560px]">
-      <Table className="table-fixed">
+      <Table className="min-w-[62rem] table-fixed">
         <colgroup>
-          <col className="w-[22%]" />
-          <col className="w-[16%]" />
-          <col className="w-[16%]" />
+          <col className="w-[18%]" />
           <col className="w-[14%]" />
           <col className="w-[14%]" />
-          <col className="w-[8%]" />
-          <col className="w-[10%]" />
+          <col className="w-[13%]" />
+          <col className="w-[13%]" />
+          <col className="w-[12%]" />
+          <col className="w-[12%]" />
         </colgroup>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
@@ -131,11 +131,11 @@ export function TableComponent({
                 <TableCell className="truncate px-4 py-3">
                   {formatCurrency(enterprise.unit_value)}
                 </TableCell>
-                <TableCell className="px-4 py-3">
+                <TableCell className="px-4 py-3 whitespace-nowrap">
                   {enterprise.units_quantity}
                 </TableCell>
-                <TableCell className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-1">
+                <TableCell className="px-3 py-3">
+                  <div className="flex w-full items-center justify-end gap-1.5">
                     <Button
                       asChild
                       variant="ghost"
