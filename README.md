@@ -92,17 +92,6 @@ cp .env.example .env
 
 Status possíveis: `em_lancamento`, `em_obras`, `entregue`.
 
-### Postman
-
-Importe a collection pronta em [`postman/Enterprises.postman_collection.json`](postman/Enterprises.postman_collection.json) (Import → Upload Files no Postman).
-
-Variáveis da collection:
-
-| Variável | Valor padrão | Uso |
-|----------|--------------|-----|
-| `baseUrl` | `http://localhost:8000/api` | Prefixo da API |
-| `enterpriseId` | _(vazio)_ | UUID para Show / Update / Delete — preencha com um `id` retornado no List |
-
 ### URLs e bodies (Postman)
 
 Base: `http://localhost:8000/api`
