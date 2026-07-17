@@ -116,14 +116,77 @@ Não há autenticação neste módulo — o acesso é aberto, conforme o escopo 
 
 ## Decisões técnicas
 
+### Infra e organização
+
 - **Monorepo simples**: backend e frontend no mesmo repositório para facilitar a avaliação e o setup.
 - **Bootstrap no entrypoint**: `composer install`, `key:generate`, `migrate` e `seed` rodam ao subir o container `app`.
 - **API REST com resource routes**: `apiResource` do Laravel para o CRUD padrão.
-- **Validação em DTOs + regras de negócio no service**: entrada HTTP validada nos DTOs; regras numéricas (`gt:0`, quantidade mínima) reforçadas no service.
 - **UUID como identificador**: evita exposição sequencial de IDs.
 - **Status como string tipada**: valores estáveis na API (`em_lancamento`, `em_obras`, `entregue`) com labels em português no frontend.
-- **React Query + Axios**: cache/invalidação da listagem e mutações sem gerenciar estado global manualmente.
-- **Sem autenticação, cache distribuído, filas ou DDD completo**: fora do escopo pedido; a estrutura ficou deliberadamente enxuta para um primeiro módulo evolutivo.
+- **Defaults hardcoded no Compose (ambiente de teste)**: senha do banco, portas e URL da API têm valores padrão no `docker-compose.yml` para o avaliador subir com um único comando, sem criar `.env`. Em produto real, esses valores seriam obrigatoriamente via `.env`/secrets — o `.env` nunca iria para o versionamento.
+
+### Stack do frontend
+
+- **axios**: instância única em `frontend/src/lib/axios.ts` com `VITE_API_URL` e headers JSON; os services usam essa base e o React Query orquestra cache/mutações.
+- **react-hook-form + zod**: schema (`enterpriseFormSchema`) via `zodResolver` tipa o form e valida formato no cliente; erros de domínio do servidor (422) são mapeados nos mesmos campos.
+- **react-router-dom**: rotas de listagem/detalhe/edição e filtros da listagem em query params (`useSearchParams`), não só em `useState`.
+- **Tailwind + shadcn/ui**: layout utilitário + primitives acessíveis; componentes de domínio (listagem, filtros, modais) compostam esses primitives.
+- **React Query + Axios**: cache/invalidação da listagem e mutações sem estado global manual.
+
+### Busca por nome com debounce
+
+Sem debounce, cada tecla atualizaria a URL e dispararia um request (“R”, “Re”, “Res”…), gerando carga, race conditions e flicker.
+
+### Paginação
+
+A paginação foi implementada mostrando os valores numéricos das páginas diretamente na UI, não só os botões de avançar/voltar — o usuário vê 1 2 3 4 5 e pode clicar direto na página que quer, sem precisar navegar sequencialmente uma por uma.
+
+
+### URL como estado (query params)
+
+Benefícios: link compartilhável (`/?name=Residencial&status=em_obras&page=2`), histórico do navegador e refresh mantêm o contexto. Mudança de `name` ou `status` remove `page`, evitando página inválida após filtrar.
+
+### Validações de negócio (nome duplicado)
+
+- **Cliente (Zod)**: presença, tamanho, UF, números `gt(0)` / `min(1)` e enum de status — feedback imediato de formato. Não valida unicidade de nome no Zod (exigiria hit na API a cada digitação).
+- **Servidor (DTO Laravel)**: `unique:enterprises,name` no store/update; responde **422** com `{ message, errors }`.
+- **Formulário**: `applyServerErrors` cola o 422 no campo `name` via `setError`. Se houver erros de campo, não dispara toast — o feedback fica no form.
+
+### Prototipagem de UI com Lovable
+
+O layout inicial foi prototipado com Lovable como referência visual. A implementação versionada é React (Vite + Tailwind + shadcn), adaptada — não o export bruto do prototipador.
+link - https://lovable.dev/preview/e5ToRKmYntDnBZy2SP2V2u95nALv9lfQ
+
+### Toasts (sonner)
+
+Create/update/delete usam `toast.success` / `toast.error` + invalidação do React Query. Erro 422 com campos não gera toast — o formulário mostra o erro no campo. Preferível a `alert()` porque não bloqueia a UI.
+
+### Responsividade
+
+- **Formulário**: `grid-cols-1` → `sm:grid-cols-2`.
+- **Filtro**: `flex flex-wrap` para busca e abas empilharem em viewports menores.
+- **Tabela**: `table-fixed` + `colgroup` com larguras percentuais + `truncate` nas células; scroll horizontal quando necessário.
+
+### Traits (Laravel)
+
+`ValidatesEnterpriseRules` reutiliza regras numéricas (`total_value > 0`, `units_quantity >= 1`, `unit_value > 0`) no `EnterpriseService`, reforçando o DTO HTTP sem herança forçada entre services.
+
+### DTOs
+
+Controllers não passam `$request->all()` ao service. DTOs `final readonly` (`StoreEnterpriseDto`, `UpdateEnterpriseDto`, `ListEnterpriseDto`, `EnterpriseResponseDto`) validam na construção (`fromArray`) e tipam o contrato por camada. Fluxo do store: Controller → DTO → Service → Eloquent → `EnterpriseResponseDto`.
+
+### Por que não usamos Repository Pattern
+
+Não utilizamos Repository pelo fato de o próprio framework já fornecer os Query Scopes. Também não usamos interface no Repository, pois não há necessidade de trocar de ORM — o intuito de usar um framework opinado como o Laravel é justamente aproveitar o que ele já fornece.
+
+### Interfaces
+
+`EnterpriseServiceInterface` define o contrato; `EnterpriseService` implementa; binding no `AppServiceProvider`. O controller injeta a interface (Dependency Inversion), facilitando mock em testes e deixando o contrato público explícito.
+
+### Evolução modular
+
+Se o produto crescesse, o próximo passo arquitetural seria organizar o projeto por módulos de domínio, ao invés de uma estrutura única com todos os Controllers e Services misturados.
+Exemplo: um módulo user conteria seu próprio Controller, Service, Interface (contrato do Service) e Traits, isolado do módulo enterprise, que seguiria a mesma estrutura. Isso facilita escalar o time por domínio, isolar testes por módulo, e evita que uma pasta única vire um emaranhado de arquivos sem relação clara entre si.
 
 ## Comandos úteis
 
