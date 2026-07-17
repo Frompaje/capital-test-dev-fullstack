@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { CreateEnterpriseForm } from "./form";
 
-interface CreateEnterpriseModalProps {
+interface props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -15,7 +15,7 @@ interface CreateEnterpriseModalProps {
 export function CreateEnterpriseModal({
   open,
   onOpenChange,
-}: CreateEnterpriseModalProps) {
+}: props) {
   const handleClose = () => {
     onOpenChange(false);
   };

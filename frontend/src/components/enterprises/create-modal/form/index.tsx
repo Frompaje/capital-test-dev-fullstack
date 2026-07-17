@@ -25,7 +25,7 @@ import {
   type EnterpriseFormSchema,
 } from "@/schemas/enterprise";
 
-interface CreateEnterpriseFormProps {
+interface props {
   onSuccess: () => void;
   onCancel: () => void;
 }
@@ -33,7 +33,7 @@ interface CreateEnterpriseFormProps {
 export function CreateEnterpriseForm({
   onSuccess,
   onCancel,
-}: CreateEnterpriseFormProps) {
+}: props) {
   const { mutateAsync, isPending } = useCreateEnterprise();
 
   const {
