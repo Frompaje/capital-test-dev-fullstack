@@ -4,9 +4,12 @@ Sistema interno para gestão de empreendimentos imobiliários.
 
 Monorepo com API Laravel (PHP) + frontend React (TypeScript) + PostgreSQL, executado via Docker.
 
-## Como clonar o projeto
+## Requisitos
 
-### Passos
+- [Docker](https://docs.docker.com/get-docker/) e Docker Compose instalados
+- [Git](https://git-scm.com/) instalado (para clonar o repositório)
+
+## Como clonar e iniciar o projeto
 
 1. Clone o repositório:
 
@@ -14,13 +17,28 @@ Monorepo com API Laravel (PHP) + frontend React (TypeScript) + PostgreSQL, execu
 git clone git@github.com:Frompaje/capital-test-dev-fullstack.git
 ```
 
-2. Entre na pasta do projeto:
+1. Entre na pasta do projeto:
 
 ```bash
 cd capital-test-dev-fullstack
 ```
 
-3. Siga o setup técnico abaixo.
+1. Suba a aplicação com Docker:
+
+```bash
+docker compose up -d --build
+```
+
+Na primeira subida o bootstrap já cria o `.env` do Laravel, instala dependências, gera a `APP_KEY`, roda migrations e seeders. Aguarde ~1–2 minutos e acesse:
+
+
+| Recurso  | URL                                                    |
+| -------- | ------------------------------------------------------ |
+| Frontend | [http://localhost:5173](http://localhost:5173)         |
+| Backend  | [http://localhost:8000/api](http://localhost:8000/api) |
+
+
+Detalhes de `.env`, reinstalação manual, migrations e seeders estão na seção **Setup técnico** abaixo.
 
 ## Estrutura
 
@@ -46,6 +64,7 @@ cp .env.example .env
 
 Variáveis disponíveis no `.env` da raiz:
 
+
 | Variável           | Padrão                      | Descrição                      |
 | ------------------ | --------------------------- | ------------------------------ |
 | `APP_PORT`         | `8000`                      | Porta do backend (Nginx)       |
@@ -55,6 +74,7 @@ Variáveis disponíveis no `.env` da raiz:
 | `DB_USERNAME`      | `capital_user`              | Usuário do PostgreSQL          |
 | `DB_PASSWORD`      | `capital_pass`              | Senha do PostgreSQL            |
 | `DB_EXTERNAL_PORT` | `5432`                      | Porta do PostgreSQL no host    |
+
 
 O `.env` do Laravel (`backend/.env`) é criado automaticamente pelo entrypoint a partir de `backend/.env.example` na primeira subida, se ainda não existir. Também é gerada a `APP_KEY` quando estiver vazia.
 
@@ -78,11 +98,13 @@ O frontend instala as dependências do npm e sobe o Vite.
 
 Aguarde ~1–2 minutos na primeira vez e acesse:
 
+
 | Recurso               | URL                                                                            |
 | --------------------- | ------------------------------------------------------------------------------ |
 | Frontend              | [http://localhost:5173](http://localhost:5173)                                 |
 | Backend (API)         | [http://localhost:8000/api](http://localhost:8000/api)                         |
 | Health da API (lista) | [http://localhost:8000/api/enterprises](http://localhost:8000/api/enterprises) |
+
 
 Para acompanhar o bootstrap:
 
@@ -132,6 +154,7 @@ docker compose exec app php artisan migrate:fresh --seed
 
 ## Serviços
 
+
 | Serviço    | Container          | Função                                   |
 | ---------- | ------------------ | ---------------------------------------- |
 | `postgres` | `capital_postgres` | Banco PostgreSQL 16                      |
@@ -139,7 +162,9 @@ docker compose exec app php artisan migrate:fresh --seed
 | `nginx`    | `capital_nginx`    | Proxy HTTP da API                        |
 | `frontend` | `capital_frontend` | Vite (React)                             |
 
+
 ## API — endpoints principais
+
 
 | Método   | Endpoint                | Descrição                                            |
 | -------- | ----------------------- | ---------------------------------------------------- |
@@ -148,6 +173,7 @@ docker compose exec app php artisan migrate:fresh --seed
 | `POST`   | `/api/enterprises`      | Cadastro                                             |
 | `PUT`    | `/api/enterprises/{id}` | Atualização                                          |
 | `DELETE` | `/api/enterprises/{id}` | Exclusão                                             |
+
 
 Status possíveis: `em_lancamento`, `em_obras`, `entregue`.
 
@@ -320,3 +346,4 @@ docker compose exec frontend npm install
 - PostgreSQL 16
 - Docker / Docker Compose
 - Nginx
+
