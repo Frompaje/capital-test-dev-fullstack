@@ -14,15 +14,51 @@ Monorepo com API Laravel (PHP) + frontend React (TypeScript) + PostgreSQL, execu
 git clone git@github.com:Frompaje/capital-test-dev-fullstack.git
 ```
 
-1. Entre na pasta do projeto:
+2. Entre na pasta do projeto:
 
 ```bash
 cd capital-test-dev-fullstack
 ```
 
-1. Suba a aplicação com Docker (próxima seção).
+3. Siga o setup técnico abaixo.
 
-## Subir a aplicação
+## Estrutura
+
+```text
+/
+├── backend/          # API Laravel
+├── frontend/         # Aplicação React + TypeScript (Vite)
+├── docker/           # Dockerfile PHP, entrypoint e Nginx
+├── docker-compose.yml
+├── .env.example
+└── README.md
+```
+
+## Setup técnico
+
+### Como configurar o arquivo `.env`
+
+Na raiz do projeto, os valores padrão do `docker-compose.yml` já funcionam sem criar `.env`. Para customizar portas ou banco:
+
+```bash
+cp .env.example .env
+```
+
+Variáveis disponíveis no `.env` da raiz:
+
+| Variável           | Padrão                      | Descrição                      |
+| ------------------ | --------------------------- | ------------------------------ |
+| `APP_PORT`         | `8000`                      | Porta do backend (Nginx)       |
+| `FRONTEND_PORT`    | `5173`                      | Porta do frontend (Vite)       |
+| `API_URL`          | `http://localhost:8000/api` | URL da API usada pelo frontend |
+| `DB_DATABASE`      | `capital_db`                | Nome do banco                  |
+| `DB_USERNAME`      | `capital_user`              | Usuário do PostgreSQL          |
+| `DB_PASSWORD`      | `capital_pass`              | Senha do PostgreSQL            |
+| `DB_EXTERNAL_PORT` | `5432`                      | Porta do PostgreSQL no host    |
+
+O `.env` do Laravel (`backend/.env`) é criado automaticamente pelo entrypoint a partir de `backend/.env.example` na primeira subida, se ainda não existir. Também é gerada a `APP_KEY` quando estiver vazia.
+
+### Como iniciar os containers Docker
 
 Na raiz do projeto:
 
@@ -42,13 +78,11 @@ O frontend instala as dependências do npm e sobe o Vite.
 
 Aguarde ~1–2 minutos na primeira vez e acesse:
 
-
 | Recurso               | URL                                                                            |
 | --------------------- | ------------------------------------------------------------------------------ |
 | Frontend              | [http://localhost:5173](http://localhost:5173)                                 |
 | Backend (API)         | [http://localhost:8000/api](http://localhost:8000/api)                         |
 | Health da API (lista) | [http://localhost:8000/api/enterprises](http://localhost:8000/api/enterprises) |
-
 
 Para acompanhar o bootstrap:
 
@@ -56,40 +90,47 @@ Para acompanhar o bootstrap:
 docker compose logs -f app
 ```
 
-## Estrutura
+### Como instalar as dependências
 
-```text
-/
-├── backend/          # API Laravel
-├── frontend/         # Aplicação React + TypeScript (Vite)
-├── docker/           # Dockerfile PHP, entrypoint e Nginx
-├── docker-compose.yml
-├── .env.example
-└── README.md
-```
-
-## Configuração opcional
-
-Os valores padrão já funcionam sem criar `.env`. Se quiser customizar portas ou banco:
+Na primeira subida isso já roda sozinho. Para reinstalar manualmente:
 
 ```bash
-cp .env.example .env
+# Backend (Composer)
+docker compose exec app composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# Frontend (npm)
+docker compose exec frontend npm install
 ```
 
+### Como executar as migrations
 
-| Variável           | Padrão                      | Descrição                      |
-| ------------------ | --------------------------- | ------------------------------ |
-| `APP_PORT`         | `8000`                      | Porta do backend (Nginx)       |
-| `FRONTEND_PORT`    | `5173`                      | Porta do frontend (Vite)       |
-| `API_URL`          | `http://localhost:8000/api` | URL da API usada pelo frontend |
-| `DB_DATABASE`      | `capital_db`                | Nome do banco                  |
-| `DB_USERNAME`      | `capital_user`              | Usuário do PostgreSQL          |
-| `DB_PASSWORD`      | `capital_pass`              | Senha do PostgreSQL            |
-| `DB_EXTERNAL_PORT` | `5432`                      | Porta do PostgreSQL no host    |
+Na primeira subida as migrations já rodam via entrypoint. Para executar manualmente:
 
+```bash
+docker compose exec app php artisan migrate --force
+```
+
+Para recriar o banco do zero (apaga os dados e aplica as migrations novamente):
+
+```bash
+docker compose exec app php artisan migrate:fresh
+```
+
+### Como executar os seeders
+
+Na primeira subida o seeder roda automaticamente se a tabela de empreendimentos estiver vazia. Para executar manualmente:
+
+```bash
+docker compose exec app php artisan db:seed --force
+```
+
+Para recriar o banco e já popular com os dados de exemplo:
+
+```bash
+docker compose exec app php artisan migrate:fresh --seed
+```
 
 ## Serviços
-
 
 | Serviço    | Container          | Função                                   |
 | ---------- | ------------------ | ---------------------------------------- |
@@ -98,9 +139,7 @@ cp .env.example .env
 | `nginx`    | `capital_nginx`    | Proxy HTTP da API                        |
 | `frontend` | `capital_frontend` | Vite (React)                             |
 
-
 ## API — endpoints principais
-
 
 | Método   | Endpoint                | Descrição                                            |
 | -------- | ----------------------- | ---------------------------------------------------- |
@@ -109,7 +148,6 @@ cp .env.example .env
 | `POST`   | `/api/enterprises`      | Cadastro                                             |
 | `PUT`    | `/api/enterprises/{id}` | Atualização                                          |
 | `DELETE` | `/api/enterprises/{id}` | Exclusão                                             |
-
 
 Status possíveis: `em_lancamento`, `em_obras`, `entregue`.
 
@@ -282,4 +320,3 @@ docker compose exec frontend npm install
 - PostgreSQL 16
 - Docker / Docker Compose
 - Nginx
-
