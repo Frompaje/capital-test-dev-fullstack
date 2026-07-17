@@ -1,4 +1,5 @@
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,8 +38,8 @@ export function TableComponent({
           <col className="w-[16%]" />
           <col className="w-[14%]" />
           <col className="w-[14%]" />
-          <col className="w-[10%]" />
           <col className="w-[8%]" />
+          <col className="w-[10%]" />
         </colgroup>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
@@ -98,7 +99,12 @@ export function TableComponent({
             enterprises.map((enterprise) => (
               <TableRow key={enterprise.id} className="h-12">
                 <TableCell className="max-w-0 truncate px-4 py-3 font-medium text-foreground">
-                  {enterprise.name}
+                  <Link
+                    to={`/enterprises/${enterprise.id}`}
+                    className="hover:underline"
+                  >
+                    {enterprise.name}
+                  </Link>
                 </TableCell>
                 <TableCell className="max-w-0 truncate px-4 py-3 text-muted-foreground">
                   {enterprise.city} · {enterprise.state}
@@ -126,12 +132,24 @@ export function TableComponent({
                 <TableCell className="px-4 py-3">
                   <div className="flex items-center justify-end gap-1">
                     <Button
-                      type="button"
+                      asChild
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={`Ver detalhes de ${enterprise.name}`}
+                    >
+                      <Link to={`/enterprises/${enterprise.id}`}>
+                        <EyeIcon className="size-4 text-muted-foreground" />
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Editar ${enterprise.name}`}
                     >
-                      <PencilIcon className="size-4 text-muted-foreground" />
+                      <Link to={`/enterprises/${enterprise.id}/edit`}>
+                        <PencilIcon className="size-4 text-muted-foreground" />
+                      </Link>
                     </Button>
                     <Button
                       type="button"

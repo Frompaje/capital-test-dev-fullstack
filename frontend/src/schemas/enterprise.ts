@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { EnterpriseFormData } from '@/types/enterprise'
+import type { Enterprise, EnterpriseFormData } from '@/types/enterprise'
 
 export const enterpriseFormSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório').max(255),
@@ -30,4 +30,18 @@ export const defaultEnterpriseFormValues: EnterpriseFormData = {
   units_quantity: 0,
   unit_value: 0,
   status: 'em_lancamento',
+}
+
+export function toEnterpriseFormValues(
+  enterprise: Enterprise,
+): EnterpriseFormSchema {
+  return {
+    name: enterprise.name,
+    city: enterprise.city,
+    state: enterprise.state,
+    total_value: Number(enterprise.total_value),
+    units_quantity: enterprise.units_quantity,
+    unit_value: Number(enterprise.unit_value),
+    status: enterprise.status,
+  }
 }
