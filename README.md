@@ -131,7 +131,7 @@ docker compose exec app php artisan migrate:fresh --seed
 
 
 | Método   | Endpoint                | Descrição                                            |
-| -------- | ------------------------------------------------------ |
+| -------- | ----------------------- | ---------------------------------------------------- |
 | `GET`    | `/api/enterprises`      | Lista (suporta `name`, `status`, `page`, `per_page`) |
 | `GET`    | `/api/enterprises/{id}` | Detalhe                                              |
 | `POST`   | `/api/enterprises`      | Cadastro                                             |
