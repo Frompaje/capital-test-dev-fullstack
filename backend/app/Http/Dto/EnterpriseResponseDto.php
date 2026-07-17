@@ -38,9 +38,16 @@ final readonly class EnterpriseResponseDto
     public function toArray(): array
     {
         return [
-            'name'  => $this->name,
-            'city'  => $this->city,
-            'state' => $this->state,
+            'id'              => $this->id,
+            'name'            => $this->name,
+            'city'            => $this->city,
+            'state'           => $this->state,
+            'total_value'     => $this->totalValue,
+            'units_quantity'  => $this->unitsQuantity,
+            'unit_value'      => $this->unitValue,
+            'status'          => $this->status,
+            'created_at'      => $this->createdAt,
+            'updated_at'      => $this->updatedAt,
         ];
     }
 }
