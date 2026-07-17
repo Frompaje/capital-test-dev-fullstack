@@ -4,6 +4,29 @@ Sistema interno para gestão de empreendimentos imobiliários.
 
 Monorepo com API Laravel (PHP) + frontend React (TypeScript) + PostgreSQL, executado via Docker.
 
+## Como clonar o projeto
+
+### Pré-requisitos
+
+- [Git](https://git-scm.com/) instalado
+- [Docker](https://docs.docker.com/get-docker/) e Docker Compose instalados
+
+### Passos
+
+1. Clone o repositório:
+
+```bash
+git clone git@github.com:Frompaje/capital-test-dev-fullstack.git
+```
+
+1. Entre na pasta do projeto:
+
+```bash
+cd capital-test-dev-fullstack
+```
+
+1. Suba a aplicação com Docker (próxima seção).
+
 ## Subir a aplicação
 
 Na raiz do projeto:
