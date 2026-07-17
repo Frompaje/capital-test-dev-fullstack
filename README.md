@@ -6,11 +6,6 @@ Monorepo com API Laravel (PHP) + frontend React (TypeScript) + PostgreSQL, execu
 
 ## Como clonar o projeto
 
-### Pré-requisitos
-
-- [Git](https://git-scm.com/) instalado
-- [Docker](https://docs.docker.com/get-docker/) e Docker Compose instalados
-
 ### Passos
 
 1. Clone o repositório:
