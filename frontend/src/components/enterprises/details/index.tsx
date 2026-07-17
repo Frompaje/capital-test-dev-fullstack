@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
-import { ArrowLeftIcon, PencilIcon } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { DeleteDialog } from "@/components/enterprises/delete-dialog";
 import {
   ENTERPRISE_STATUS_LABELS,
   ENTERPRISE_STATUS_STYLES,
@@ -18,6 +20,8 @@ import { useEnterprise } from "@/hooks/useEnterprise";
 import { cn } from "@/lib/utils";
 
 export function Details({ id }: { id: string }) {
+  const navigate = useNavigate();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const { data: enterprise, isLoading, isError } = useEnterprise(id);
 
   const details = enterprise
@@ -107,6 +111,16 @@ export function Details({ id }: { id: string }) {
                     Editar
                   </Link>
                 </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => setIsDeleteOpen(true)}
+                >
+                  <Trash2Icon className="size-4" />
+                  Excluir
+                </Button>
               </div>
             </div>
           </div>
@@ -133,6 +147,13 @@ export function Details({ id }: { id: string }) {
               </dl>
             </CardContent>
           </Card>
+
+          <DeleteDialog
+            enterprise={enterprise}
+            open={isDeleteOpen}
+            onOpenChange={setIsDeleteOpen}
+            onSuccess={() => navigate("/")}
+          />
         </>
       )}
     </div>

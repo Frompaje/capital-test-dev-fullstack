@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DeleteDialog } from "@/components/enterprises/delete-dialog";
 import {
   ENTERPRISE_STATUS_LABELS,
   ENTERPRISE_STATUS_STYLES,
@@ -29,6 +31,9 @@ export function TableComponent({
   isLoading,
   isError,
 }: props) {
+  const [enterpriseToDelete, setEnterpriseToDelete] =
+    useState<Enterprise | null>(null);
+
   return (
     <div className="min-h-[560px]">
       <Table className="table-fixed">
@@ -156,6 +161,7 @@ export function TableComponent({
                       variant="ghost"
                       size="icon-sm"
                       aria-label={`Excluir ${enterprise.name}`}
+                      onClick={() => setEnterpriseToDelete(enterprise)}
                     >
                       <Trash2Icon className="size-4 text-destructive" />
                     </Button>
@@ -165,6 +171,16 @@ export function TableComponent({
             ))}
         </TableBody>
       </Table>
+
+      <DeleteDialog
+        enterprise={enterpriseToDelete}
+        open={Boolean(enterpriseToDelete)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEnterpriseToDelete(null);
+          }
+        }}
+      />
     </div>
   );
 }
