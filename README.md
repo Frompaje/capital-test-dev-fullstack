@@ -4,11 +4,6 @@ Sistema interno para gestão de empreendimentos imobiliários.
 
 Monorepo com API Laravel (PHP) + frontend React (TypeScript) + PostgreSQL, executado via Docker.
 
-## Requisitos
-
-- Docker
-- Docker Compose
-
 ## Subir a aplicação
 
 Na raiz do projeto:
@@ -29,11 +24,13 @@ O frontend instala as dependências do npm e sobe o Vite.
 
 Aguarde ~1–2 minutos na primeira vez e acesse:
 
-| Recurso | URL |
-|---------|-----|
-| Frontend | http://localhost:5173 |
-| Backend (API) | http://localhost:8000/api |
-| Health da API (lista) | http://localhost:8000/api/enterprises |
+
+| Recurso               | URL                                                                            |
+| --------------------- | ------------------------------------------------------------------------------ |
+| Frontend              | [http://localhost:5173](http://localhost:5173)                                 |
+| Backend (API)         | [http://localhost:8000/api](http://localhost:8000/api)                         |
+| Health da API (lista) | [http://localhost:8000/api/enterprises](http://localhost:8000/api/enterprises) |
+
 
 Para acompanhar o bootstrap:
 
@@ -61,34 +58,40 @@ Os valores padrão já funcionam sem criar `.env`. Se quiser customizar portas o
 cp .env.example .env
 ```
 
-| Variável | Padrão | Descrição |
-|----------|--------|-----------|
-| `APP_PORT` | `8000` | Porta do backend (Nginx) |
-| `FRONTEND_PORT` | `5173` | Porta do frontend (Vite) |
-| `API_URL` | `http://localhost:8000/api` | URL da API usada pelo frontend |
-| `DB_DATABASE` | `capital_db` | Nome do banco |
-| `DB_USERNAME` | `capital_user` | Usuário do PostgreSQL |
-| `DB_PASSWORD` | `capital_pass` | Senha do PostgreSQL |
-| `DB_EXTERNAL_PORT` | `5432` | Porta do PostgreSQL no host |
+
+| Variável           | Padrão                      | Descrição                      |
+| ------------------ | --------------------------- | ------------------------------ |
+| `APP_PORT`         | `8000`                      | Porta do backend (Nginx)       |
+| `FRONTEND_PORT`    | `5173`                      | Porta do frontend (Vite)       |
+| `API_URL`          | `http://localhost:8000/api` | URL da API usada pelo frontend |
+| `DB_DATABASE`      | `capital_db`                | Nome do banco                  |
+| `DB_USERNAME`      | `capital_user`              | Usuário do PostgreSQL          |
+| `DB_PASSWORD`      | `capital_pass`              | Senha do PostgreSQL            |
+| `DB_EXTERNAL_PORT` | `5432`                      | Porta do PostgreSQL no host    |
+
 
 ## Serviços
 
-| Serviço | Container | Função |
-|---------|-----------|--------|
-| `postgres` | `capital_postgres` | Banco PostgreSQL 16 |
-| `app` | `capital_app` | PHP-FPM (Laravel) + bootstrap automático |
-| `nginx` | `capital_nginx` | Proxy HTTP da API |
-| `frontend` | `capital_frontend` | Vite (React) |
+
+| Serviço    | Container          | Função                                   |
+| ---------- | ------------------ | ---------------------------------------- |
+| `postgres` | `capital_postgres` | Banco PostgreSQL 16                      |
+| `app`      | `capital_app`      | PHP-FPM (Laravel) + bootstrap automático |
+| `nginx`    | `capital_nginx`    | Proxy HTTP da API                        |
+| `frontend` | `capital_frontend` | Vite (React)                             |
+
 
 ## API — endpoints principais
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/enterprises` | Lista (suporta `name`, `status`, `page`, `per_page`) |
-| `GET` | `/api/enterprises/{id}` | Detalhe |
-| `POST` | `/api/enterprises` | Cadastro |
-| `PUT` | `/api/enterprises/{id}` | Atualização |
-| `DELETE` | `/api/enterprises/{id}` | Exclusão |
+
+| Método   | Endpoint                | Descrição                                            |
+| -------- | ----------------------- | ---------------------------------------------------- |
+| `GET`    | `/api/enterprises`      | Lista (suporta `name`, `status`, `page`, `per_page`) |
+| `GET`    | `/api/enterprises/{id}` | Detalhe                                              |
+| `POST`   | `/api/enterprises`      | Cadastro                                             |
+| `PUT`    | `/api/enterprises/{id}` | Atualização                                          |
+| `DELETE` | `/api/enterprises/{id}` | Exclusão                                             |
+
 
 Status possíveis: `em_lancamento`, `em_obras`, `entregue`.
 
@@ -156,7 +159,7 @@ http://localhost:8000/api/enterprises/{id}
 ## Como testar a aplicação
 
 1. Rode `docker compose up -d --build` e aguarde o bootstrap.
-2. Acesse http://localhost:5173.
+2. Acesse [http://localhost:5173](http://localhost:5173).
 3. Na listagem, use a busca por nome e as abas de status.
 4. Abra um empreendimento para ver os detalhes.
 5. Cadastre um novo empreendimento pelo botão de criação.
@@ -192,7 +195,6 @@ Sem debounce, cada tecla atualizaria a URL e dispararia um request (“R”, “
 
 A paginação foi implementada mostrando os valores numéricos das páginas diretamente na UI, não só os botões de avançar/voltar — o usuário vê 1 2 3 4 5 e pode clicar direto na página que quer, sem precisar navegar sequencialmente uma por uma.
 
-
 ### URL como estado (query params)
 
 Benefícios: link compartilhável (`/?name=Residencial&status=em_obras&page=2`), histórico do navegador e refresh mantêm o contexto. Mudança de `name` ou `status` remove `page`, evitando página inválida após filtrar.
@@ -206,7 +208,7 @@ Benefícios: link compartilhável (`/?name=Residencial&status=em_obras&page=2`),
 ### Prototipagem de UI com Lovable
 
 O layout inicial foi prototipado com Lovable como referência visual. A implementação versionada é React (Vite + Tailwind + shadcn), adaptada — não o export bruto do prototipador.
-link - https://lovable.dev/preview/e5ToRKmYntDnBZy2SP2V2u95nALv9lfQ
+link - [https://lovable.dev/preview/e5ToRKmYntDnBZy2SP2V2u95nALv9lfQ](https://lovable.dev/preview/e5ToRKmYntDnBZy2SP2V2u95nALv9lfQ)
 
 ### Toasts (sonner)
 
@@ -262,3 +264,4 @@ docker compose exec frontend npm install
 - PostgreSQL 16
 - Docker / Docker Compose
 - Nginx
+
