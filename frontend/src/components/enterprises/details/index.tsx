@@ -70,7 +70,7 @@ export function Details({ id }: { id: string }) {
             </Link>
           </Button>
           <p className="text-sm text-destructive">
-            Não foi possível carregar o empreendimento.
+            Não foi possível carregar o empreendimento, tente novamente.
           </p>
         </div>
       )}

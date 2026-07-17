@@ -83,7 +83,7 @@ export function TableComponent({
                 colSpan={7}
                 className="h-[520px] px-4 text-center text-destructive"
               >
-                Não foi possível carregar os empreendimentos.
+                Não foi possível carregar os empreendimentos, tente novamente.
               </TableCell>
             </TableRow>
           )}
