@@ -27,6 +27,7 @@ export function List() {
     enterprises: data?.data ?? [],
     currentPage: data?.meta?.current_page ?? page,
     lastPage: data?.meta?.last_page ?? 1,
+    total: data?.meta?.total ?? 0,
   };
 
   return (
@@ -49,7 +50,10 @@ export function List() {
           />
         </div>
 
-        <div className="flex h-14 items-center justify-center border-t px-4">
+        <div className="relative flex h-14 items-center justify-center border-t px-4">
+          <p className="absolute left-4 text-sm text-muted-foreground">
+            Total: {list.total}
+          </p>
           {list.lastPage > 1 && (
             <Pagination
               currentPage={list.currentPage}
