@@ -17,19 +17,19 @@ Monorepo com API Laravel (PHP) + frontend React (TypeScript) + PostgreSQL, execu
 git clone git@github.com:Frompaje/capital-test-dev-fullstack.git
 ```
 
-1. Entre na pasta do projeto:
+2. Entre na pasta do projeto:
 
 ```bash
 cd capital-test-dev-fullstack
 ```
 
-1. Suba a aplicação com Docker:
+3. Suba a aplicação:
 
 ```bash
 docker compose up -d --build
 ```
 
-Na primeira subida o bootstrap já cria o `.env` do Laravel, instala dependências, gera a `APP_KEY`, roda migrations e seeders. Aguarde ~1–2 minutos e acesse:
+Na primeira subida o Docker já faz todo o bootstrap: cria o `.env` do Laravel, instala dependências (Composer e npm), gera a `APP_KEY`, roda migrations e seeders. Aguarde ~1–2 minutos e acesse:
 
 
 | Recurso  | URL                                                    |
@@ -38,7 +38,13 @@ Na primeira subida o bootstrap já cria o `.env` do Laravel, instala dependênci
 | Backend  | [http://localhost:8000/api](http://localhost:8000/api) |
 
 
-Detalhes de `.env`, reinstalação manual, migrations e seeders estão na seção **Setup técnico** abaixo.
+Para acompanhar o bootstrap:
+
+```bash
+docker compose logs -f app
+```
+
+Customização de `.env` e comandos manuais estão na seção **Setup técnico** abaixo.
 
 ## Estrutura
 
@@ -54,9 +60,9 @@ Detalhes de `.env`, reinstalação manual, migrations e seeders estão na seçã
 
 ## Setup técnico
 
-### Como configurar o arquivo `.env`
+### Arquivo `.env`
 
-Na raiz do projeto, os valores padrão do `docker-compose.yml` já funcionam sem criar `.env`. Para customizar portas ou banco:
+Os valores padrão do `docker-compose.yml` já funcionam sem criar `.env`. Para customizar portas ou banco:
 
 ```bash
 cp .env.example .env
@@ -76,45 +82,7 @@ Variáveis disponíveis no `.env` da raiz:
 | `DB_EXTERNAL_PORT` | `5432`                      | Porta do PostgreSQL no host    |
 
 
-O `.env` do Laravel (`backend/.env`) é criado automaticamente pelo entrypoint a partir de `backend/.env.example` na primeira subida, se ainda não existir. Também é gerada a `APP_KEY` quando estiver vazia.
-
-### Como iniciar os containers Docker
-
-Na raiz do projeto:
-
-```bash
-docker compose up -d --build
-```
-
-Na primeira subida o container do backend já faz automaticamente:
-
-- cria o `.env` do Laravel (se não existir)
-- instala as dependências do Composer
-- gera a `APP_KEY`
-- roda as migrations
-- popula o banco com dados de exemplo (se estiver vazio)
-
-O frontend instala as dependências do npm e sobe o Vite.
-
-Aguarde ~1–2 minutos na primeira vez e acesse:
-
-
-| Recurso               | URL                                                                            |
-| --------------------- | ------------------------------------------------------------------------------ |
-| Frontend              | [http://localhost:5173](http://localhost:5173)                                 |
-| Backend (API)         | [http://localhost:8000/api](http://localhost:8000/api)                         |
-| Health da API (lista) | [http://localhost:8000/api/enterprises](http://localhost:8000/api/enterprises) |
-
-
-Para acompanhar o bootstrap:
-
-```bash
-docker compose logs -f app
-```
-
-### Como instalar as dependências
-
-Na primeira subida isso já roda sozinho. Para reinstalar manualmente:
+### Reinstalar dependências
 
 ```bash
 # Backend (Composer)
@@ -124,29 +92,25 @@ docker compose exec app composer install --no-interaction --prefer-dist --optimi
 docker compose exec frontend npm install
 ```
 
-### Como executar as migrations
-
-Na primeira subida as migrations já rodam via entrypoint. Para executar manualmente:
+### Migrations
 
 ```bash
 docker compose exec app php artisan migrate --force
 ```
 
-Para recriar o banco do zero (apaga os dados e aplica as migrations novamente):
+Recriar o banco do zero (apaga os dados):
 
 ```bash
 docker compose exec app php artisan migrate:fresh
 ```
 
-### Como executar os seeders
-
-Na primeira subida o seeder roda automaticamente se a tabela de empreendimentos estiver vazia. Para executar manualmente:
+### Seeders
 
 ```bash
 docker compose exec app php artisan db:seed --force
 ```
 
-Para recriar o banco e já popular com os dados de exemplo:
+Recriar o banco e popular com dados de exemplo:
 
 ```bash
 docker compose exec app php artisan migrate:fresh --seed
@@ -155,19 +119,19 @@ docker compose exec app php artisan migrate:fresh --seed
 ## Serviços
 
 
-| Serviço    | Container          | Função                                   |
-| ---------- | ------------------ | ---------------------------------------- |
-| `postgres` | `capital_postgres` | Banco PostgreSQL 16                      |
-| `app`      | `capital_app`      | PHP-FPM (Laravel) + bootstrap automático |
-| `nginx`    | `capital_nginx`    | Proxy HTTP da API                        |
-| `frontend` | `capital_frontend` | Vite (React)                             |
+| Serviço    | Container          | Função                    |
+| ---------- | ------------------ | ------------------------- |
+| `postgres` | `capital_postgres` | Banco PostgreSQL 16       |
+| `app`      | `capital_app`      | PHP-FPM (Laravel)         |
+| `nginx`    | `capital_nginx`    | Proxy HTTP da API         |
+| `frontend` | `capital_frontend` | Vite (React)              |
 
 
 ## API — endpoints principais
 
 
 | Método   | Endpoint                | Descrição                                            |
-| -------- | ----------------------- | ---------------------------------------------------- |
+| -------- | ------------------------------------------------------ |
 | `GET`    | `/api/enterprises`      | Lista (suporta `name`, `status`, `page`, `per_page`) |
 | `GET`    | `/api/enterprises/{id}` | Detalhe                                              |
 | `POST`   | `/api/enterprises`      | Cadastro                                             |
@@ -240,13 +204,12 @@ http://localhost:8000/api/enterprises/{id}
 
 ## Como testar a aplicação
 
-1. Rode `docker compose up -d --build` e aguarde o bootstrap.
-2. Acesse [http://localhost:5173](http://localhost:5173).
-3. Na listagem, use a busca por nome e as abas de status.
-4. Abra um empreendimento para ver os detalhes.
-5. Cadastre um novo empreendimento pelo botão de criação.
-6. Edite um registro existente.
-7. Exclua um empreendimento e confirme a remoção na listagem.
+1. Acesse [http://localhost:5173](http://localhost:5173).
+2. Na listagem, use a busca por nome e as abas de status.
+3. Abra um empreendimento para ver os detalhes.
+4. Cadastre um novo empreendimento pelo botão de criação.
+5. Edite um registro existente.
+6. Exclua um empreendimento e confirme a remoção na listagem.
 
 Não há autenticação neste módulo — o acesso é aberto, conforme o escopo do desafio.
 
@@ -346,4 +309,3 @@ docker compose exec frontend npm install
 - PostgreSQL 16
 - Docker / Docker Compose
 - Nginx
-
